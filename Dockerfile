@@ -4,6 +4,7 @@ RUN apk add --no-cache \
     nginx \
     supervisor \
     curl \
+    dos2unix \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
@@ -31,7 +32,7 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+RUN dos2unix /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
 EXPOSE ${PORT:-80}
 
