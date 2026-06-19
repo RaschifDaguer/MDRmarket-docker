@@ -24,6 +24,9 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
 COPY . .
 
+# Fix Windows line endings on all PHP/config files
+RUN find /var/www -type f \( -name "*.php" -o -name "*.env*" -o -name "*.json" -o -name "*.xml" -o -name "*.yaml" -o -name "*.yml" -o -name "*.conf" -o -name "*.sh" \) -exec dos2unix {} \; 2>/dev/null || true
+
 RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
@@ -34,7 +37,8 @@ RUN mkdir -p /var/log/supervisor
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/start.sh /usr/local/bin/start.sh
-RUN dos2unix /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+RUN dos2unix /usr/local/bin/start.sh /etc/nginx/http.d/default.conf /etc/supervisor/conf.d/supervisord.conf \
+    && chmod +x /usr/local/bin/start.sh
 
 EXPOSE ${PORT:-80}
 
