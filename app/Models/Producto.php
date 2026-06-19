@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Producto extends Model
 {
     use HasFactory;
-    protected $table = 'producto';
+    protected $table = 'Producto';
 
     protected $fillable = [
         'id_comerciante',
