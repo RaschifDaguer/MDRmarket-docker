@@ -76,8 +76,8 @@ class ProductoController extends Controller
             'stock'             => 'nullable|integer|min:0',
             'en_oferta'         => 'nullable|boolean',
             'precio_oferta'     => 'nullable|numeric|min:0',
-            'foto'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:204800',
-            'imagen_producto'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:204800',
+            'foto'              => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,bmp,svg,tiff,ico,avif|max:204800',
+            'imagen_producto'   => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,bmp,svg,tiff,ico,avif|max:204800',
             'imagen'            => 'nullable|string',
             'url_imagen'        => 'nullable|string',
         ]);
