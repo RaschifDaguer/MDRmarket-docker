@@ -24,6 +24,11 @@ class AuthController extends Controller
             'nombre' => 'required|string|max:255',
             'telefono' => 'required|string|max:50',
             'direccion' => 'nullable|string',
+            'nombreNegocio' => 'nullable|string|max:255',
+            'ruc' => 'nullable|string|max:50',
+            'razonSocial' => 'nullable|string|max:255',
+            'placaVehiculo' => 'nullable|string|max:20',
+            'numeroLicencia' => 'nullable|string|max:50',
             'tipo' => 'required_if:rol,repartidor|nullable|string|in:moto,bicicleta,auto,camion',
         ]);
 
@@ -55,10 +60,12 @@ class AuthController extends Controller
         if ($data['rol'] === 'comerciante') {
             Comerciante::create([
                 'id' => $user->id,
-                'nombre' => $data['nombre'],
+                'nombre' => $data['nombreNegocio'] ?? $data['nombre'],
                 'email' => $data['email'],
                 'telefono' => $data['telefono'] ?? null,
                 'direccion' => $data['direccion'] ?? null,
+                'ruc' => $data['ruc'] ?? null,
+                'razon_social' => $data['razonSocial'] ?? null,
             ]);
         }
 
@@ -68,7 +75,7 @@ class AuthController extends Controller
                 'nombre' => $data['nombre'],
                 'email' => $data['email'],
                 'telefono' => $data['telefono'] ?? null,
-                'placa' => null,
+                'placa' => $data['placaVehiculo'] ?? null,
                 'tipo' => $data['tipo'] ?? null,
             ]);
         }
