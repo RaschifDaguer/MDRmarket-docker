@@ -28,7 +28,7 @@ class PedidoController extends Controller
         $order = in_array($request->get('order'), ['asc', 'desc']) ? $request->get('order') : 'desc';
 
         // 2. Definimos cuántos elementos queremos por página
-        $perPage = max(1, min($request->query('perPage', 10), 100)); // Entre 1 y 100, por defecto 10
+        $perPage = max(1, min($request->query('perPage', 100), 100));
 
         // 3. Construimos la query base
         $query = Pedido::with(['cliente', 'comerciante', 'repartidor', 'items.producto']);
