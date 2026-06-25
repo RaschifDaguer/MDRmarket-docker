@@ -34,30 +34,26 @@ class PedidoController extends Controller
         $query = Pedido::with(['cliente', 'comerciante', 'repartidor', 'items.producto']);
         $user = $request->user();
 
-        if ($user) {
-            if ($user->cliente && ! $request->has('clienteId')) {
+        $hasExplicitFilter = $request->filled('clienteId') || $request->filled('comercianteId') || $request->filled('repartidorId');
+
+        if ($hasExplicitFilter) {
+            if ($request->filled('clienteId')) {
+                $query->where('id_cliente', $request->clienteId);
+            }
+            if ($request->filled('comercianteId')) {
+                $query->where('id_comerciante', $request->comercianteId);
+            }
+            if ($request->filled('repartidorId')) {
+                $query->where('id_repartidor', $request->repartidorId);
+            }
+        } elseif ($user) {
+            if ($user->comerciante) {
+                $query->where('id_comerciante', $user->id);
+            } elseif ($user->repartidor) {
+                $query->where('id_repartidor', $user->id);
+            } elseif ($user->cliente) {
                 $query->where('id_cliente', $user->id);
             }
-
-            if ($user->comerciante && ! $request->has('comercianteId')) {
-                $query->where('id_comerciante', $user->id);
-            }
-
-            if ($user->repartidor && ! $request->has('repartidorId')) {
-                $query->where('id_repartidor', $user->id);
-            }
-        }
-
-        if ($request->filled('clienteId')) {
-            $query->where('id_cliente', $request->clienteId);
-        }
-
-        if ($request->filled('comercianteId')) {
-            $query->where('id_comerciante', $request->comercianteId);
-        }
-
-        if ($request->filled('repartidorId')) {
-            $query->where('id_repartidor', $request->repartidorId);
         }
 
         // 4. Ordenamos y paginamos
