@@ -33,9 +33,14 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $errors = $validator->errors();
+            $message = 'Los datos enviados no son válidos.';
+            if ($errors->has('email') && str_contains($errors->first('email'), 'taken')) {
+                $message = 'Este correo electrónico ya está registrado. Intenta iniciar sesión.';
+            }
             return response()->json([
-                'message' => 'Los datos enviados no son válidos.',
-                'errors' => $validator->errors(),
+                'message' => $message,
+                'errors' => $errors,
             ], 422);
         }
 
