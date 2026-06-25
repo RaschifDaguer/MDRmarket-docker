@@ -204,19 +204,23 @@ class AuthController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'rol'       => 'required|string|in:cliente,comerciante,repartidor',
-            'nombre'    => 'nullable|string|max:255',
-            'telefono'  => 'nullable|string|max:50',
-            'direccion' => 'nullable|string',
-            'tipo'      => Rule::requiredIf(fn () => $request->rol === 'repartidor' && ! $user->repartidor)
-                            ->sometimes()->in(['moto', 'bicicleta', 'auto', 'camion']),
+            'rol'            => 'required|string|in:cliente,comerciante,repartidor',
+            'nombre'         => 'nullable|string|max:255',
+            'telefono'       => 'nullable|string|max:50',
+            'direccion'      => 'nullable|string',
+            'nombreNegocio'  => 'nullable|string|max:255',
+            'ruc'            => 'nullable|string|max:50',
+            'placaVehiculo'  => 'nullable|string|max:20',
+            'numeroLicencia' => 'nullable|string|max:50',
+            'tipoVehiculo'   => 'nullable|string|in:moto,bicicleta,auto,camion',
+            'tipo'           => 'nullable|string|in:moto,bicicleta,auto,camion',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
         }
 
-        $data   = $validator->validated();
+        $data   = $request->all();
         $rol    = $data['rol'];
         $nombre = $data['nombre'] ?? $user->name;
 
@@ -233,10 +237,11 @@ class AuthController extends Controller
         if ($rol === 'comerciante' && ! $user->comerciante) {
             Comerciante::create([
                 'id'        => $user->id,
-                'nombre'    => $nombre,
+                'nombre'    => $data['nombreNegocio'] ?? $nombre,
                 'email'     => $user->email,
                 'telefono'  => $data['telefono'] ?? null,
                 'direccion' => $data['direccion'] ?? null,
+                'ruc'       => $data['ruc'] ?? null,
             ]);
         }
 
@@ -246,8 +251,8 @@ class AuthController extends Controller
                 'nombre'   => $nombre,
                 'email'    => $user->email,
                 'telefono' => $data['telefono'] ?? null,
-                'placa'    => null,
-                'tipo'     => $data['tipo'] ?? 'moto',
+                'placa'    => $data['placaVehiculo'] ?? null,
+                'tipo'     => $data['tipoVehiculo'] ?? $data['tipo'] ?? 'moto',
             ]);
         }
 
